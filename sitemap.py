@@ -34,7 +34,7 @@ def cb_handle(args):
     config = request.getConfiguration()
     url = config.get('sitemap_url', '/sitemap.xml')
     if pyhttp['PATH_INFO'] != url:
-        return 0
+        return False
     response = request.getResponse()
     response.addHeader('Content-type', 'application/xml')
     urls = []
@@ -47,4 +47,4 @@ def cb_handle(args):
     urls.reverse()
     sitemap = TEMPLATE_BASE % ('\n'.join(urls))
     response.write(sitemap)
-    return 1
+    return True
