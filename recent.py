@@ -1,32 +1,45 @@
+# coding: utf-8
+"""
+recent.py
+
+This plugin provides a list of recent 10 entries in the `recent` variable.
+"""
+
+__author__ = 'Junji NAKANISHI <jun-g@daemonfreaks.com>'
+__version__ = 'version 0.1.20200525'
+__url__ = 'https://github.com/daemonfreaks/pyblosxom-plugins'
+__description__ = 'This is a PyBlosxom plugin that provides recent entry list'
+
+import time
+
 from Pyblosxom import tools, entries
-import time, os
+
+
 def cb_filelist(args):
-	request = args['request']
-	data = request.getData()
-	config = request.getConfiguration()
+    request = args['request']
+    data = request.getData()
+    config = request.getConfiguration()
 
-	allentries = tools.Walk(request, config['datadir'])
+    allentries = tools.Walk(request, config['datadir'])
 
-	i = 0
-	recent = [ ]
-	x = { }  
-	for a in allentries:
-		timetuple = tools.filestat(request, a)
-		entrystamp = time.mktime(timetuple)
-		tstamp = entrystamp
-		a_path = a[len(config['datadir']):a.rfind(os.sep)]
-		fn = a[a.rfind(os.sep)+1:a.rfind(".")]
-		x[tstamp] = a
+    entries_by_time = {}
+    for entry in allentries:
+        timetuple = tools.filestat(request, entry)
+        entrystamp = time.mktime(timetuple)
+        entries_by_time[entrystamp] = entry
 
-	e = x.keys()
-	e.sort()
-	e.reverse()
-	f = e[0:10]
-	for g in f:
-		fn = x[g]
-		e = entries.fileentry.FileEntry(request,fn,data['root_datadir'])
-		#url="/%s/%s.html" % (e.get("absolute_path"), e.get("fn"))
-		url="%s%s/%s.html" % (config["base_url"], e.get("absolute_path"), e.get("fn"))
-		title=e.get("title")
-		recent.append('* <a href="%s">%s</a>' % (url,title))
-	data['recent'] = "<br/>".join(recent) 
+    times = sorted(entries_by_time.keys())
+    times.reverse()
+    times = times[0:10]
+
+    recent = []
+    for entry_time in times:
+        entry = entries_by_time[entry_time]
+        file_entry = entries.fileentry.FileEntry(request, entry,
+                                                 data['root_datadir'])
+        url = '%s%s/%s.html' % (config['base_url'],
+                                file_entry.get('absolute_path'),
+                                file_entry.get('fn'))
+        title = file_entry.get('title')
+        recent.append('<li><a href="%s">%s</a></li>' % (url, title))
+    data['recent'] = '<ul id="recententries">\n%s\n</ul>' % ('\n'.join(recent))
