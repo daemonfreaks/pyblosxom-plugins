@@ -74,31 +74,31 @@ Questions, comments, and fixes can be sent to joe@terrarum.net
 
            2. cb_fileset now returns entries sorted by date with most current
               first.
+
+Original authors:
+
+- Joe Topjian <joe@terrarum.net>
+- shunuhs - shunuhs.jp at gmail dot com
+
 """
 
-#__author__ = 'Joe Topjian <joe@terrarum.net>'
-#__version__ = '200510242045 TCF'
-#__url__ = 'http://joe.terrarum.net'
-
-#__author__ = 'shunuhs - shunuhs.jp at gmail dot com'
-#__version__ = 'v0.1 2005/08/20'
-#__url__ = 'http://sh1.2-d.jp/b/'
-#__description__ = "show tags cloud"
+__author__ = 'Junji NAKANISHI <jun-g@daemonfreaks.com>'
+__version__ = 'v0.1.20200528'
+__url__ = 'http://github.com/daemonfreaks/pyblosxom-plugins/'
+__description__ = "show tags cloud"
 
 
-# Variables
 import os
 import re
 import sys
 
-# Change this if your Pyblosxom installation is somewhere different!
 from Pyblosxom import entries, tools
 
 
 def verify_installation(request):
     config = request.get_configuration()
     if 'tag_url' not in config:
-        print 'missing tag_url for tags.py and pytagcloud.py.'
+        print('missing tag_url for tags.py and pytagcloud.py.')
         return 0
     return 1
 
@@ -122,14 +122,14 @@ def cb_filelist(args):
         tag = re.sub("%s" % config['tag_url'], '', data['url'])
         for root, dirs, files in os.walk(config['datadir']):
             for x in files:
-                m = re.compile('.*\.([^.]+)$').search(x)
+                m = re.compile(r'.*\.([^.]+)$').search(x)
                 if m and m.group(1) in tagfileswithext:
                     entry_location = root + "/" + x
                     directory = os.path.dirname(entry_location)
                     if os.path.split(directory)[1] in ignore_directories:
                         continue
                     contents = open(entry_location, 'r').read()
-                    m = re.compile('\n#tags\s+(.*)\n').search(contents)
+                    m = re.compile(r'\n#tags\s+(.*)\n').search(contents)
                     if (m and tag in m.group(1).split(',')) \
                        or (not m and tag == 'untagged'):
                         tmpentry = entries.fileentry \
@@ -189,7 +189,7 @@ class TagCloud:
 
         tags_dic = {}
         for i in elist:
-            f = file(i, 'r')
+            f = open(i, 'r')
             contents = f.read()
             f.close()
 
@@ -204,15 +204,13 @@ class TagCloud:
                         tags_dic[j] = 1
 
         output = ''
-        tkeys = tags_dic.keys()
-        tkeys.sort()
 
         tags_sum = sum(tags_dic.values())
 
         pretext = '<a title="%s posts" class="%s" href="'
         posttext = '</a>'
 
-        for i in tkeys:
+        for i in sorted(tags_dic):
             count = tags_dic[i]
             percent = count / float(tags_sum)
             if percent >= 0.2:
