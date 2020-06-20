@@ -1,20 +1,18 @@
 # coding: utf-8
 """
 This plugin displays the 'sp.flav' flavour when accessed by a smartphone.
-
-Copyright 2011 Junji NAKANISHI
 """
 
 __author__ = 'Junji NAKANISHI'
 __email__ = 'jun-g at daemonfreaks.com'
-__version__ = '2013-11-03'
+__version__ = '0.2.20200620'
 __url__ = 'http://www.daemonfreaks.com/'
 __description__ = 'Displays the sp.flav flavour'
 __license__ = 'MIT'
 
 
 from datetime import datetime
-import Cookie
+from http.cookies import SimpleCookie
 
 
 def verify_installation(request):
@@ -37,7 +35,7 @@ def cb_filelist(args):
         is_sp = True
     else:
         cs = request.http.get('HTTP_COOKIE', '')
-        cookie = Cookie.SimpleCookie()
+        cookie = SimpleCookie()
         cookie.load(cs)
         if 'mode' in cookie and cookie['mode'].value == 'sp':
             is_sp = True
