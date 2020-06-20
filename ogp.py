@@ -13,7 +13,7 @@ __description__ = 'The Open Graph protocol plugin for Pyblosxom'
 __license__ = 'MIT'
 
 import re
-import urlparse
+from urllib import parse
 
 from Pyblosxom import tools
 
@@ -58,7 +58,7 @@ def cb_prepare(args):
         if images:
             image = images[0]
             if not image.startswith('http'):
-                image = urlparse.urljoin(config.get('base_url', ''), image)
+                image = parse.urljoin(config.get('base_url', ''), image)
 
     else:
         elems['og:type'] = 'blog'
