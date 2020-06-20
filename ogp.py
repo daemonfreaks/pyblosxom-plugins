@@ -3,35 +3,31 @@
 This plugin is the Open Graph protocol markup to your Pyblosxom blog.
 To use, add the ``$ogp_tag`` variable to your head templates in the
 <head> area.
-
-Copyright 2011-2013 Junji NAKANISHI
 """
 
 __author__ = 'Junji NAKANISHI'
 __email__ = 'jun-g at daemonfreaks.com'
-__version__ = '0.0.2'
-__url__ = 'http://www.daemonfreaks.com/'
-__description__ = 'The Open Graph protocol plugin'
+__version__ = '0.0.3.20200601'
+__url__ = 'https://github.com/daemonfreaks/pyblosxom-plugins'
+__description__ = 'The Open Graph protocol plugin for Pyblosxom'
 __license__ = 'MIT'
-
-_IMAGE_URL = 'http://pyblosxom.github.io/images/pb_pyblosxom.gif'
-_TAG_TEMPLATE = '<meta property="%s" content="%s" />'
 
 import re
 import urlparse
+
 from Pyblosxom import tools
 
+_IMAGE_URL = 'https://raw.githubusercontent.com/pyblosxom/pyblosxom-web/master/images/pb_pyblosxom.gif'
+_TAG_TEMPLATE = '<meta property="%s" content="%s" />'
 _DESC_REGEXP = re.compile(r'<.*?>')
 _IMG_REGEXP = re.compile(r'<img.*src=(["\'])?([^ "\']*)[^>]*>')
 
 
 def verify_installation(request):
-
     return 1
 
 
 def cb_prepare(args):
-
     request = args['request']
     config = request.get_configuration()
     data = request.get_data()
