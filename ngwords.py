@@ -3,7 +3,7 @@ A Pyblosxom plugin to check whether there are some NG words in the comment.
 """
 
 __author__ = "Junji NAKANISHI <daemonfreaks@gmail.com>"
-__version__ = "0.2.20200620"
+__version__ = "0.2.20210103"
 __url__ = 'https://github.com/daemonfreaks/pyblosxom-plugins/'
 __description__ = 'NG words plugin for PyBlosxom'
 __license__ = 'MIT'
@@ -24,7 +24,7 @@ def cb_comment_reject(args):
 
     for word in config.get("ngwords", []):
         for element in ('author', 'link', 'email', 'description'):
-            if comment[element]:
+            if comment.get(element):
                 if word in comment[element]:
                     _write_log(http['REMOTE_ADDR'], comment['author'],
                                comment['description'], word)
